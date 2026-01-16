@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: spring-deployment
+    namespace: default
+    labels:
+        app: postr-app
+        component: app-server
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: postr-app
+    template:
+        metadata:
+            labels:
+                app: postr-app
+        spec:
+            containers:
+                - name: postr-container
+                  image: ghcr.io/kon-bikas/postr-app:latest
+                  ports:
+                      - containerPort: 8080
+                        name: postr-port
+                  env:
+                      - name: SPRING_DATASOURCE_URL
+                        value: jdbc:postgresql://psql-svc:5432/test_db
+                      - name: SPRING_RABBITMQ_HOST
+                        value: rabbit-svc
+                  readinessProbe:
+                      httpGet:
+                          path: /api/actuator/health/readiness
+                          port: postr-port
+                      initialDelaySeconds: 20
+                      periodSeconds: 20
+                      timeoutSeconds: 15
+                  livenessProbe:
+                      httpGet:
+                          path: /api/actuator/health/liveness
+                          port: postr-port
+                      initialDelaySeconds: 20
+                      periodSeconds: 20
+                      timeoutSeconds: 15
+                  resources:
+                      requests:
+                          cpu: 300m
+                          memory: 256Mi
+                      limits:
+                          cpu: 1000m
+                          memory: 512Mi
+            imagePullSecrets:
+                - name: ghcr-secret

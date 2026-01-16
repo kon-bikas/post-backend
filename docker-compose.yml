@@ -1,0 +1,63 @@
+services:
+    app-database:
+        image: postgres:14
+        container_name: postgres-postr-db
+        ports:
+            - "5432:5432"
+        volumes:
+            - db_app_data:/var/lib/postgresql/data
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready", "-U", "postgres"]
+            interval: 30s
+            timeout: 20s
+            retries: 3
+        environment:
+            POSTGRES_USER: admin
+            POSTGRES_PASSWORD: admin
+            POSTGRES_DB: oauth_test
+    keycloak:
+        image: ghcr.io/kon-bikas/keycloak-event-spi:latest
+        command: ["start-dev", "--import-realm"]
+        container_name: keycloak-idp
+        ports:
+            - "9090:8080"
+        depends_on:
+            rabbit:
+                condition: service_healthy
+        volumes:
+            - ./keycloak/keycloak.conf:/opt/keycloak/conf/keycloak.conf
+            - ./keycloak/import.json:/opt/keycloak/data/import/import.json
+    rabbit:
+        image: rabbitmq:4.1-management-alpine
+        container_name: rabbitmq
+        ports:
+            - "5672:5672"
+            - "15672:15672"
+        environment:
+            RABBITMQ_DEFAULT_VHOST: service
+        volumes:
+            - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+            - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json
+        healthcheck:
+            test: ["CMD", "rabbitmq-diagnostics", "ping"]
+            interval: 5s
+            timeout: 5s
+            retries: 10
+    minio:
+        image: quay.io/minio/minio
+        container_name: minio-storage
+        command: "server data"
+        ports:
+            -   "9000:9000"
+            -   "9001:9001"
+        environment:
+            MINIO_ADDRESS: ":9000"
+            MINIO_CONSOLE_ADDRESS: ":9001"
+            MINIO_ROOT_USER: minioadmin
+            MINIO_ROOT_PASSWORD: minioadmin
+        volumes:
+            -   minio_data:/data
+volumes:
+    db_app_data:
+    minio_data:
+

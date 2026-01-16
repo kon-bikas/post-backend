@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: debug-cm
+    namespace: default
+data:
+    config.values: |
+        conf-val-one=val1
+        conf-val-two=val2
+        conf-val-three=val3
+
+    other.values: |
+        oth-val-one=val1
+        oth-val-two=val2
+        oth-val-three=val3

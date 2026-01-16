@@ -1,0 +1,99 @@
+services:
+    app-database:
+        image: postgres:14
+        container_name: postgres-postr-db
+        ports:
+            - "5432:5432"
+        volumes:
+            - db_app_data:/var/lib/postgresql/data
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready", "-U", "postgres"]
+            interval: 30s
+            timeout: 20s
+            retries: 3
+        environment:
+            POSTGRES_USER: admin
+            POSTGRES_PASSWORD: admin
+            POSTGRES_DB: oauth_test
+    keycloak:
+        image: ghcr.io/kon-bikas/keycloak-event-spi:latest
+        command: "start-dev"
+        container_name: keycloak-idp
+        ports:
+            - "9090:8080"
+        depends_on:
+            rabbit:
+                condition: service_healthy
+        environment:
+            KC_BOOTSTRAP_ADMIN_USERNAME: admin
+            KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+            KC_SPI_EVENTS_LISTENER_TEST_LISTENER_ENABLED: true
+            KC_SPI_EVENTS_LISTENER_TEST_LISTENER_RABBIT_HOST: rabbit
+            KC_SPI_EVENTS_LISTENER_TEST_LISTENER_RABBIT_PORT: 5672
+            KC_SPI_EVENTS_LISTENER_TEST_LISTENER_RABBIT_USERNAME: admin
+            KC_SPI_EVENTS_LISTENER_TEST_LISTENER_RABBIT_PASSWORD: admin
+            KC_SPI_EVENTS_LISTENER_TEST_LISTENER_RABBIT_EXCHANGE: app.exchange
+            KC_SPI_EVENTS_LISTENER_TEST_LISTENER_RABBIT_VIRTUAL_HOST: service
+            KC_HOSTNAME_STRICT_HTTPS: false
+    rabbit:
+        image: rabbitmq:4.1-management-alpine
+        container_name: rabbitmq
+        ports:
+            - "5672:5672"
+            - "15672:15672"
+        environment:
+            RABBITMQ_DEFAULT_VHOST: service
+        volumes:
+            -   ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+            -   ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json
+        healthcheck:
+            test: ["CMD", "rabbitmq-diagnostics", "ping"]
+            interval: 5s
+            timeout: 5s
+            retries: 10
+
+    minio:
+        image: quay.io/minio/minio
+        container_name: minio-storage
+        #        command: ["server", "/data", "--console-address", ":9001"]
+        command: "server data"
+        ports:
+            -   "9000:9000"
+            -   "9001:9001"
+        environment:
+            MINIO_ADDRESS: ":9000"
+            MINIO_CONSOLE_ADDRESS: ":9001"
+            MINIO_ROOT_USER: minioadmin
+            MINIO_ROOT_PASSWORD: minioadmin
+        volumes:
+            -   minio_data:/data
+
+    spring:
+        image: spring-postr:latest
+        build:
+            context: .
+            dockerfile: spring.Dockerfile
+        ports:
+            -   "8080:8080"
+        depends_on:
+            app-database:
+                condition: service_healthy
+            rabbit:
+                condition: service_healthy
+        healthcheck:
+            test: ["CMD", "curl", "-f" , "http://localhost:8080/actuator/health"]
+            interval: 20s
+            timeout: 10s
+            retries: 3
+        environment:
+            SPRING_DATASOURCE_URL: jdbc:postgresql://app-database:5432/oauth_test
+            SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI: http://keycloak:9090/realms/demo-realm
+            SPRING_RABBITMQ_HOST: rabbit
+            SPRING_PROFILES_ACTIVE: dev
+            APP_MINIO_HOST_IP: minio
+            APP_KEYCLOAK_SERVER_URL: http://keycloak:9090
+
+volumes:
+    db_app_data:
+    minio_data:
+

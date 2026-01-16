@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Pod
+metadata:
+    name: ubuntu-dbg
+    namespace: default
+    labels:
+        app: debug
+spec:
+    initContainers:
+        - name: ubuntu-test-init
+          image: ubuntu:24.04
+          volumeMounts:
+              - name: test-volume
+                mountPath: /home/test
+              - name: other-volume
+                mountPath: /etc
+          command:
+              - "/bin/bash"
+              - "-c"
+              - |
+                  cat /home/test/test.conf >> /etc/xattr.conf
+    containers:
+        - name: ubuntu-container
+          image: ubuntu:24.04
+          command: ["sleep", "10000"]
+          volumeMounts:
+              - name: other-volume
+                mountPath: /etc/xattr.conf
+    volumes:
+        - name: test-volume
+          configMap:
+              name: ubuntu-cm
+              items:
+                  - key: ubuntu.test
+                    path: test.conf
+        - name: other-volume
+          emptyDir: {}

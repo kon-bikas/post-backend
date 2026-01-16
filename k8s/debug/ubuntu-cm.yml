@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: ubuntu-cm
+    namespace: default
+data:
+    ubuntu.test: |
+        # this is a test file 1
+        # this is a test file 2
+        # this is a test file 3

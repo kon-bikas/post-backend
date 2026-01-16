@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: psql-conf-cm
+    namespace: default
+data:
+    psql.conf.master: |
+        # This is a test comment for master 1
+        # This is a test comment for master 2
+        # This is a test comment for master 3
+
+    psql.conf.slave: |
+        # This is a test comment for slave 1
+        # This is a test comment for slaver 2
+        # This is a test comment for slave 3
+    
+    postgresql.conf.master: |
+        listen_addresses = '*'
+        max_connections = 100
+        shared_buffers = 128MB
+        dynamic_shared_memory_type = posix
+        max_wal_size = 1GB
+        min_wal_size = 80MB
+        log_timezone = 'Etc/UTC'
+        datestyle = 'iso, mdy'
+        timezone = 'Etc/UTC'
+        lc_messages = 'en_US.utf8'
+        lc_monetary = 'en_US.utf8'
+        lc_numeric = 'en_US.utf8'
+        lc_time = 'en_US.utf8'
+        default_text_search_config = 'pg_catalog.english'
+        
+        wal_level = replica
+        max_wal_senders = 5
+        wal_keep_size = 64
+
+        

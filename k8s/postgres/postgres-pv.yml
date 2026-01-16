@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+    name: psql-pv
+    namespace: default
+    labels:
+        app: db
+        db: psql
+spec:
+    accessModes:
+        -   ReadWriteOnce
+    capacity:
+        storage: 100Mi
+    storageClassName: microk8s-hostpath
+    claimRef:
+        name: psql-pvc
+        namespace: default
+    hostPath:
+        path: /tmp/psql-demo
