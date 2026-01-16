@@ -1,4 +1,6 @@
 ## Postr Service
 
-Restfull service for uploading posts with images, replying to post etc
-jenkins test
+Spring Boot application that allows users:
+- publish a post including a description and an image
+- like and repost another user's post
+- reply on a user's post or reply
