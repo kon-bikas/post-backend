@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         ANSIBLE_CONFIG = '/var/lib/jenkins/workspace/terraform/ansible.cfg'
-        ANSIBLE_SSH_ARGS = '-F /var/lib/jenkins/.ssh/config'
+        ANSIBLE_SSH_ARGS = '-F /var/lib/jenkins/.ssh/config -o StrictHostKeyChecking=no'
         DIR_ANSIBLE_PROJECT = '/var/lib/jenkins/workspace/terraform'
     }
 
