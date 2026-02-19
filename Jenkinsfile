@@ -14,7 +14,7 @@ pipeline {
 
     stages {
         stage('Cloning latest ansible repo') {
-            steps{
+            steps {
                 build job: 'ansible'
             }
         }
