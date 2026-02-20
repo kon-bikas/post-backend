@@ -68,6 +68,7 @@ services:
             -   minio_data:/data
     spring:
         image: ghcr.io/kon-bikas/postr-app:latest
+        container_name: post-application
         ports:
             -   "8080:8080"
         depends_on:
