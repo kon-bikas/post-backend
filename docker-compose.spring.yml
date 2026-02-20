@@ -50,7 +50,8 @@ services:
         image: quay.io/minio/minio
         container_name: minio-storage
         #        command: ["server", "/data", "--console-address", ":9001"]
-        command: "server data"
+        entrypoint: sh
+        command: -c "mkdir -p /data/media && /usr/bin/minio server /data"
         ports:
             -   "9000:9000"
             -   "9001:9001"
@@ -78,11 +79,13 @@ services:
             retries: 3
         environment:
             SPRING_DATASOURCE_URL: jdbc:postgresql://app-database:5432/oauth_test
-            SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI: http://keycloak:9090/realms/demo-realm
+            SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://keycloak:9091/realms/demo-realm
+            SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: https://keycloak:9091/realms/demo-realm/protocol/openid-connect/certs
             SPRING_RABBITMQ_HOST: rabbit
             SPRING_PROFILES_ACTIVE: dev
             APP_MINIO_HOST_IP: minio
-            APP_KEYCLOAK_SERVER_URL: http://keycloak:9090
+            APP_KEYCLOAK_SERVER_URL: https://keycloak:9091
+            APP_KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_SECRET}
 
 volumes:
     db_app_data:
