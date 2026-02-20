@@ -5,7 +5,7 @@ pipeline {
         DOCKER_TOKEN = credentials('docker-push-secrer')
         DOCKER_USER = 'kon-bikas'
         DOCKER_SERVER = 'ghcr.io'
-        DOCKER_PREFIX = 'ghcr.io/kon-bikas/postr-app'
+        DOCKER_PREFIX = 'ghcr.io/kon-bikas/post-app'
 
         ANSIBLE_CONFIG = '/var/lib/jenkins/workspace/ansible/ansible.cfg'
         ANSIBLE_SSH_ARGS = '-F /var/lib/jenkins/.ssh/config'
