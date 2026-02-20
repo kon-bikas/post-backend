@@ -17,24 +17,19 @@ services:
             POSTGRES_DB: oauth_test
     keycloak:
         image: ghcr.io/kon-bikas/keycloak-event-spi:latest
-        command: "start-dev"
+        command: [ "start-dev" , "--import-realm" ]
         container_name: keycloak-idp
         ports:
             - "9090:8080"
+            - "9091:8081"
         depends_on:
             rabbit:
                 condition: service_healthy
-        environment:
-            KC_BOOTSTRAP_ADMIN_USERNAME: admin
-            KC_BOOTSTRAP_ADMIN_PASSWORD: admin
-            KC_SPI_EVENTS_LISTENER_TEST_LISTENER_ENABLED: true
-            KC_SPI_EVENTS_LISTENER_TEST_LISTENER_RABBIT_HOST: rabbit
-            KC_SPI_EVENTS_LISTENER_TEST_LISTENER_RABBIT_PORT: 5672
-            KC_SPI_EVENTS_LISTENER_TEST_LISTENER_RABBIT_USERNAME: admin
-            KC_SPI_EVENTS_LISTENER_TEST_LISTENER_RABBIT_PASSWORD: admin
-            KC_SPI_EVENTS_LISTENER_TEST_LISTENER_RABBIT_EXCHANGE: app.exchange
-            KC_SPI_EVENTS_LISTENER_TEST_LISTENER_RABBIT_VIRTUAL_HOST: service
-            KC_HOSTNAME_STRICT_HTTPS: false
+        volumes:
+            - ./keycloak/keycloak.conf:/opt/keycloak/conf/keycloak.conf
+            - ./keycloak/import.json:/opt/keycloak/data/import/import.json
+            - ./keycloak/keycloak-server.crt.pem:/opt/keycloak/certs/keycloak-server.crt.pem
+            - ./keycloak/keycloak-server.key.pem:/opt/keycloak/certs/keycloak-server.key.pem
     rabbit:
         image: rabbitmq:4.1-management-alpine
         container_name: rabbitmq

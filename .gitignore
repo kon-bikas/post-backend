@@ -36,3 +36,7 @@ spring-service.env
 
 k8s/spring/.dockerconfigjson
 k8s/spring/ghcr-secret.yml
+
+keycloak/*.pem
+
+.env
