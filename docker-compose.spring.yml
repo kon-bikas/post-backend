@@ -67,7 +67,7 @@ services:
         volumes:
             -   minio_data:/data
     spring:
-        image: ghcr.io/kon-bikas/postr-app:latest
+        image: ghcr.io/kon-bikas/post-app:latest
         container_name: post-application
         ports:
             -   "8080:8080"
