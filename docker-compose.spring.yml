@@ -51,7 +51,6 @@ services:
             interval: 5s
             timeout: 5s
             retries: 10
-
     minio:
         image: quay.io/minio/minio
         container_name: minio-storage
@@ -67,12 +66,8 @@ services:
             MINIO_ROOT_PASSWORD: minioadmin
         volumes:
             -   minio_data:/data
-
     spring:
-        image: spring-postr:latest
-        build:
-            context: .
-            dockerfile: spring.Dockerfile
+        image: ghcr.io/kon-bikas/postr-app:latest
         ports:
             -   "8080:8080"
         depends_on:
