@@ -50,7 +50,7 @@ services:
         image: quay.io/minio/minio
         container_name: minio-storage
         #        command: ["server", "/data", "--console-address", ":9001"]
-        entrypoint: sh
+        entrypoint: /bin/bash
         command: -c "mkdir -p /data/media && /usr/bin/minio server /data"
         ports:
             -   "9000:9000"

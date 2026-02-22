@@ -7,8 +7,6 @@ pipeline {
         DOCKER_SERVER = 'ghcr.io'
         DOCKER_PREFIX = 'ghcr.io/kon-bikas/post-app'
 
-        ANSIBLE_CONFIG = '/var/lib/jenkins/workspace/ansible/ansible.cfg'
-        ANSIBLE_SSH_ARGS = '-F /var/lib/jenkins/.ssh/config'
         DIR_ANSIBLE_PROJECT = '/var/lib/jenkins/workspace/ansible'
     }
 
@@ -34,11 +32,17 @@ pipeline {
                 timeout(time: 30, unit: 'MINUTES')
             }
             steps {
+                script {
+                    def headCommit = sh(
+                            script: "git rev-parse --short HEAD",
+                            returnStdout: true
+                    ).trim()
+
+                    env.TAG = "${headCommit}-${env.BUILD_ID}"
+                }
                 sh '''
-                    HEAD_COMMIT=$(git rev-parse --short HEAD)
-                    TAG=$HEAD_COMMIT-$BUILD_ID
-                    docker build --rm -t $DOCKER_PREFIX:latest -f spring.Dockerfile .
-                '''
+                    docker build --rm -t $DOCKER_PREFIX:latest -t $DOCKER_PREFIX:$TAG -f spring.Dockerfile .
+               '''
 
                 sh '''
                     echo $DOCKER_TOKEN | docker login $DOCKER_SERVER -u $DOCKER_USER --password-stdin
@@ -46,26 +50,16 @@ pipeline {
                 '''
             }
         }
-        stage ('Test connection to deploy server') {
+        stage ('Deploy to kubernetes') {
             steps {
-                sh '''
-                    ansible -i ~/workspace/ansible/hosts.yml -m ping aws_app_server
-                '''
-            }
-        }
-        stage ('Start docker compose services') {
-            steps {
-                sshagent(credentials: ['jenkins-github']) {
-                    dir("${env.DIR_ANSIBLE_PROJECT}") {
-                        ansiblePlaybook(
-                                inventory: 'hosts.yml',
-                                playbook: 'playbooks/spring-docker.yml',
-                                vaultCredentialsId: 'ansible-vault-pass',
-                                extraVars: [
-                                        docker_secret: "${env.DOCKER_TOKEN}"
-                                ]
-                        )
-                    }
+                dir("${env.DIR_ANSIBLE_PROJECT}") {
+                    ansiblePlaybook(
+                            inventory: 'hosts.yml',
+                            playbook: 'playbooks/spring-k8s.yml',
+                            extraVars: [
+                                    new_image: "${env.DOCKER_PREFIX}:${env.TAG}"
+                            ]
+                    )
                 }
             }
         }
