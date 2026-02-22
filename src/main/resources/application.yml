@@ -36,6 +36,12 @@ server:
     servlet:
         context-path: /api
 
+springdoc:
+    api-docs:
+        path: /api-docs
+    swagger-ui:
+        path: /swagger-ui.html
+
 app:
     storage:
         accessKey: minioadmin
@@ -47,7 +53,7 @@ app:
         server_url: http://localhost:9090
         realm: demo-realm
         client_id: demo-client
-        client_secret: zjuHcKxUfD8ug1VEvi9LpsF6bgVK9vzQ
+        client_secret: bZALoPEH0PEvZTLQis0ppfmWcZIrGvIX
     rabbitmq:
         queue: app.queue
     pageable:
