@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: spring-cm
+    namespace: default
+data:
+    SPRING_DATASOURCE_URL: "jdbc:postgresql://psql-svc:5432/test_db"
+    SPRING_PROFILES_ACTIVE: "dev"
+    SPRING_RABBITMQ_HOST: "rabbit-svc"
+    SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: "http://keycloak-np-svc:8080/realms/demo-realm"
+    SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: "https://keycloak-np-svc:8080/realms/demo-realm/protocol/openid-connect/certs"
+    APP_MINIO_HOST_IP: "minio-svc"
+    APP_KEYCLOAK_SERVER_URL: "http://keycloak-np-svc:8080"
+    APP_KEYCLOAK_CLIENT_SECRET: "bZALoPEH0PEvZTLQis0ppfmWcZIrGvIX"

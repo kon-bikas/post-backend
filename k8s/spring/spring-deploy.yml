@@ -8,6 +8,11 @@ metadata:
         component: app-server
 spec:
     replicas: 1
+    strategy:
+        type: RollingUpdate
+        rollingUpdate:
+            maxSurge: 2
+            maxUnavailable: 1
     selector:
         matchLabels:
             app: postr-app
@@ -18,15 +23,13 @@ spec:
         spec:
             containers:
                 - name: postr-container
-                  image: ghcr.io/kon-bikas/postr-app:latest
+                  image: ghcr.io/kon-bikas/post-app:latest
                   ports:
                       - containerPort: 8080
                         name: postr-port
-                  env:
-                      - name: SPRING_DATASOURCE_URL
-                        value: jdbc:postgresql://psql-svc:5432/test_db
-                      - name: SPRING_RABBITMQ_HOST
-                        value: rabbit-svc
+                  envFrom:
+                      - configMapRef:
+                            name: spring-cm
                   readinessProbe:
                       httpGet:
                           path: /api/actuator/health/readiness
@@ -48,5 +51,6 @@ spec:
                       limits:
                           cpu: 1000m
                           memory: 512Mi
+                  imagePullPolicy: Always
             imagePullSecrets:
                 - name: ghcr-secret
