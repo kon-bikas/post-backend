@@ -7,9 +7,9 @@ metadata:
         app: debug
 spec:
     containers:
-        - name: busybox-container
-          image: busybox:latest
-          command: ["sleep", "1000"]
+        - name: debug-container
+          image: ubuntu:24.04
+          command: ["sleep", "10000"]
           volumeMounts:
               - name: test-volume
                 mountPath: /home/test

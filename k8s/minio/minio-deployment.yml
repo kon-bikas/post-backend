@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: minio-deployment
+    namespace: default
+    labels:
+        app: minio
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: minio
+    template:
+        metadata:
+            labels:
+                app: minio
+        spec:
+            containers:
+                - name: minio-container
+                  image: quay.io/minio/minio
+                  command: [ "/bin/bash" ]
+                  args: [ "-c", "mkdir -p /data/media && /usr/bin/minio server /data" ]
+                  ports:
+                      - containerPort: 9000
+                        name: minio-port
+                      - containerPort: 9001
+                        name: minio-console
+                  env:
+                      - name: MINIO_ADDRESS
+                        value: ":9000"
+                      - name: MINIO_CONSOLE_ADDRESS
+                        value: ":9001"
+                      - name: MINIO_ROOT_USER
+                        value: minioadmin
+                      - name: MINIO_ROOT_PASSWORD
+                        value: minioadmin
+                  volumeMounts:
+                      - mountPath: /data
+                        name: minio-volume
+            volumes:
+                - name: minio-volume
+                  persistentVolumeClaim:
+                      claimName: minio-pvc
+
