@@ -28,6 +28,16 @@
     "users": [
         {
             "enabled": true,
+            "username": "service-account-spring-client",
+            "serviceAccountClientId": "spring-client",
+            "clientRoles": {
+                "realm-management": [
+                    "view-users", "query-users", "manage-users"
+                ]
+            }
+        },
+        {
+            "enabled": true,
             "username": "konnos",
             "firstName": "Kostas",
             "lastName": "Bikas",
@@ -91,14 +101,27 @@
             "clientId": "demo-client",
             "name": "demo-client",
             "enabled": true,
+            "standardFlowEnabled": true,
+            "directAccessGrantsEnabled": true,
             "protocol": "openid-connect",
             "publicClient": false,
             "secret": "bZALoPEH0PEvZTLQis0ppfmWcZIrGvIX",
             "redirectUris": ["*"],
             "rootUrl": "http://localhost:9090",
             "defaultRoles": ["ROLE_USER"]
+        },
+        {
+            "clientId": "spring-client",
+            "name": "spring-client",
+            "enabled": true,
+            "standardFlowEnabled": true,
+            "serviceAccountsEnabled": true,
+            "protocol": "openid-connect",
+            "publicClient": false,
+            "secret": "f4Va9eduFy5KTBCp3yGFSLCnVNbnPa44",
+            "redirectUris": ["*"],
+            "rootUrl": "http://localhost:9090"
         }
-
     ]
 
 }

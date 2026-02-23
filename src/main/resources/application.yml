@@ -2,7 +2,7 @@ spring:
     application:
         name: postr
     profiles:
-        active: prod
+        active: dev
     datasource:
       url: jdbc:postgresql://localhost:5432/oauth_test
       username: admin
@@ -52,8 +52,8 @@ app:
     keycloak:
         server_url: http://localhost:9090
         realm: demo-realm
-        client_id: demo-client
-        client_secret: bZALoPEH0PEvZTLQis0ppfmWcZIrGvIX
+        client_id: spring-client
+        client_secret: f4Va9eduFy5KTBCp3yGFSLCnVNbnPa44
     rabbitmq:
         queue: app.queue
     pageable:
