@@ -8,8 +8,8 @@ data:
     SPRING_PROFILES_ACTIVE: "dev"
     SPRING_RABBITMQ_HOST: "rabbit-svc"
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: "http://keycloak-np-svc:8080/realms/demo-realm"
-    SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: "https://keycloak-np-svc:8080/realms/demo-realm/protocol/openid-connect/certs"
+    SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: "http://keycloak-np-svc:8080/realms/demo-realm/protocol/openid-connect/certs"
     SPRING_JPA_HIBERNATE_DDL_AUTO: update
-    APP_MINIO_HOST_IP: "minio-svc"
+    APP_STORAGE_HOST_IP: "minio-svc"
     APP_KEYCLOAK_SERVER_URL: "http://keycloak-np-svc:8080"
-    APP_KEYCLOAK_CLIENT_SECRET: "bZALoPEH0PEvZTLQis0ppfmWcZIrGvIX"
+    APP_KEYCLOAK_CLIENT_SECRET: "f4Va9eduFy5KTBCp3yGFSLCnVNbnPa44"
