@@ -27,6 +27,8 @@ services:
         volumes:
             - ./keycloak/keycloak.conf:/opt/keycloak/conf/keycloak.conf
             - ./keycloak/import.json:/opt/keycloak/data/import/import.json
+            - ./keycloak/keycloak-server.crt.pem:/opt/keycloak/certs/keycloak-server.crt.pem
+            - ./keycloak/keycloak-server.key.pem:/opt/keycloak/certs/keycloak-server.key.pem
     rabbit:
         image: rabbitmq:4.1-management-alpine
         container_name: rabbitmq

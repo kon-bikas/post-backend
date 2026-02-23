@@ -79,13 +79,13 @@ services:
             retries: 3
         environment:
             SPRING_DATASOURCE_URL: jdbc:postgresql://app-database:5432/oauth_test
-            SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://keycloak:9091/realms/demo-realm
-            SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: https://keycloak:9091/realms/demo-realm/protocol/openid-connect/certs
+            SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/demo-realm
+            SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://keycloak:8080/realms/demo-realm/protocol/openid-connect/certs
             SPRING_RABBITMQ_HOST: rabbit
             SPRING_PROFILES_ACTIVE: dev
             SPRING_JPA_HIBERNATE_DDL_AUTO: update
             APP_MINIO_HOST_IP: minio
-            APP_KEYCLOAK_SERVER_URL: https://keycloak:9091
+            APP_KEYCLOAK_SERVER_URL: http://keycloak:8080
             APP_KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_SECRET}
 
 volumes:
